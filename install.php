@@ -23,7 +23,7 @@
  *
  * @package   NFePHP
  * @name      install.php
- * @version   1.31
+ * @version   1.3.5
  * @license   http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @copyright 2009-2011 &copy; NFePHP
  * @link      http://www.nfephp.org/
@@ -37,11 +37,11 @@
 if (!defined('PATH_NFEPHP')) {
    define('PATH_NFEPHP', dirname( __FILE__ ));
 }
-
+error_reporting(E_ALL);ini_set('display_errors', 'On');
 require_once('config/config.php');
 require_once('libs/ToolsNFePHP.class.php');
 
-$installVer = '1.31';
+$installVer = '1.3.5';
 //cores
 $cRed = '#FF0000';
 $cGreen = '#00CC00';
@@ -144,6 +144,21 @@ if($modsoap){
     }
 }
 
+//zip
+$modzip = false;
+if($modzip = $modules->isLoaded('zip')) { // Testa se zip esta carregado
+  $modzip_enable = $modules->getModuleSetting('zip', 'Zip');
+  $modzip_ver = $modules->getModuleSetting('zip', 'Zip version');
+}
+$cZIP = $cRed;
+$zipver = ' N&atilde;o instalado !!!';
+if($modzip){
+    if($modzip_enable=='enabled'){
+        $cZIP = $cGreen;
+        $zipver = ' vers&atilde;o ' . $modzip_ver;
+    }
+}
+
 //teste de escrita no diretorio dos certificados
 $filen = $pathdir.DIRECTORY_SEPARATOR.'certs'.DIRECTORY_SEPARATOR.'teste.txt';
 $cdCerts = $cRed;
@@ -193,7 +208,7 @@ if (file_exists($filen)){
     }
 }
 
-//teste do diretorio de arquivo dos xml
+//teste do diretorio de arquivo dos xml NFe
 $cDir = $cRed;
 $wdDir = 'FALHA';
 if (is_dir($arquivosDir)) {
@@ -208,11 +223,32 @@ if (is_dir($arquivosDir)) {
     }
 } else {
     //dir não existe
-    $obsDir= ' Diretório $arquivosDir n&atilde;o existe !!';
+    $obsDir= " Diretório $arquivosDir n&atilde;o existe !!";
 }
 
+//teste do diretorio de arquivo dos xml CTe
+$ccteDir = $cRed;
+$wctedDir = 'FALHA';
+if (isset($arquivosDirCTe)){
+    if (is_dir($arquivosDirCTe)) {
+        if (mkdir($arquivosDirCTe. DIRECTORY_SEPARATOR . "teste", 0777)) {
+            rmdir($arquivosDirCTe. DIRECTORY_SEPARATOR . "teste");
+            $ccteDir = $cGreen;
+            $wctedDir= ' Permiss&atilde;o OK';
+            $obscteDir = $arquivosDirCTe;
+        } else {
+            //sem permissao
+            $obscteDir= ' Sem permiss&atilde;o !!';
+        }
+    } else {
+        //dir não existe
+        $obscteDir= " Diretório $arquivosDirCTe n&atilde;o existe !!";
+    }
+} else {
+    $obscteDir= " Diretório CTe n&atilde;o especificado !!";
+}
 //verificação da validade do certificado
-$nfe = new ToolsNFePHP();
+$nfe = new ToolsNFePHP('',0);
 if ($nfe->certDaysToExpire > 0){
     if($nfe->certDaysToExpire>365){
         $dias = round($nfe->certDaysToExpire/10,0);
@@ -264,7 +300,6 @@ if ($danfeFormato=='P'){
     $selFormL = 'selected';
     $selFormP = '';
 }
-
 //danfe canhoto
 if ($danfeCanhoto){
     $selCanh1 = 'selected';
@@ -273,7 +308,6 @@ if ($danfeCanhoto){
     $selCanh0 = 'selected';
     $selCanh1 = '';
 }
-
 //danfe posicao logo
 if ($danfeLogoPos == 'L'){
     $seldposL = 'selected';
@@ -289,6 +323,38 @@ if ($danfeLogoPos == 'R'){
     $seldposR = 'selected';
     $seldposC = '';
     $seldposL = '';
+}
+//dacte formato
+if ($dacteFormato=='P'){
+    $selcteFormP = 'selected';
+    $selcteFormL = '';
+} else {
+    $selcteFormL = 'selected';
+    $selcteFormP = '';
+}
+//dacte canhoto
+if ($dacteCanhoto){
+    $selcteCanh1 = 'selected';
+    $selcteCanh0 = '';
+} else {
+    $selcteCanh0 = 'selected';
+    $selcteCanh1 = '';
+}
+//dacte posicao logo
+if ($dacteLogoPos == 'L'){
+    $selctedposL = 'selected';
+    $selctedposC = '';
+    $selctedposR = '';
+}
+if ($dacteLogoPos == 'C'){
+    $selctedposC = 'selected';
+    $selctedposL = '';
+    $selctedposR = '';
+}
+if ($dacteLogoPos == 'R'){
+    $selctedposR = 'selected';
+    $selctedposC = '';
+    $selctedposL = '';
 }
 //autenticação obrigatória
 if ($mailAuth == 1){
@@ -473,6 +539,11 @@ class moduleCheck {
       <td bgcolor="<?php echo $cgd;?>"><div align="center">ok</div></td>
       <td>gd &eacute; necess&aacute;rio para DANFE</td>
     </tr>
+    <tr bgcolor="#FFFF99">
+      <td>ZIP <?php echo $zipver;?></td>
+      <td bgcolor="<?php echo $cZIP;?>"><div align="center">ok</div></td>
+      <td>ZIP necess&aacute;rio para download da NFe</td>
+    </tr>
     <tr>
       <td>&nbsp;</td>
       <td>&nbsp;</td>
@@ -493,10 +564,17 @@ class moduleCheck {
             <td bgcolor="<?php echo $cDir;?>"><div align="center"><?php echo $wdDir;?></div></td>
             <td bgcolor="#FFFFCC"><?php echo $obsDir;?></td>
           </tr>
+
+          <tr bgcolor="#FFFFCC">
+            <td>Diretorio CTe</td>
+            <td bgcolor="<?php echo $ccteDir;?>"><div align="center"><?php echo $wctedDir;?></div></td>
+            <td bgcolor="#FFFFCC"><?php echo $obscteDir;?></td>
+          </tr>
+
           <tr bgcolor="#FFFFCC">
             <td>Diretorio config</td>
             <td bgcolor="<?php echo $cdConf;?>"><div align="center"><?php echo $wdConf;?></div></td>
-            <td bgcolor="#FFFFCC">O diret&oacute;rio config e seu conte&uacute;do devem ter premiss&atilde;o de escrita</td>
+            <td bgcolor="#FFFFCC">O diret&oacute;rio config e seu conte&uacute;do devem ter permiss&atilde;o de escrita</td>
           </tr>
           <tr>
             <td>&nbsp;</td>
@@ -527,10 +605,16 @@ class moduleCheck {
               <td>&nbsp;</td>
             </tr>
             <tr>
-              <td><div align="right">URL dos WebServices</div></td>
+              <td><div align="right">URL dos WebServices NFe</div></td>
               <td><input name="urlws" type="text" id="" value="<?php echo $arquivoURLxml;?>" size="30" maxlength="200"></td>
               <td>&nbsp;</td>
             </tr>
+            <tr>
+              <td><div align="right">URL dos WebServices CTe</div></td>
+              <td><input name="urlwscte" type="text" id="" value="<?php echo $arquivoURLxmlCTe;?>" size="30" maxlength="200"></td>
+              <td>&nbsp;</td>
+            </tr>
+
             <tr>
               <td height="26"><div align="right">Raz&atilde;o Social</div></td>
               <td><input name="razao" type="text" id="razao" value="<?php echo $empresa;?>" size="30" maxlength="200"></td>
@@ -605,13 +689,25 @@ class moduleCheck {
               <td><i>Indique o path completo para a pasta das NFe</i></td>
             </tr>
             <tr>
+              <td><div align="right">Diret&oacute;rio de arquivo das CTe</div></td>
+              <td><input name="dircte" type="text" id="dircte" value="<?php echo $arquivosDirCTe;?>" size="30" maxlength="200"></td>
+              <td><i>Indique o path completo para a pasta das CTe</i></td>
+            </tr>
+            
+            <tr>
               <td colspan="3" bgcolor="#999999"><strong>Schemas</strong></td>
             </tr>
             <tr>
-              <td><div align="right">Vers&atilde;o 2.00</div></td>
+              <td><div align="right">Vers&atilde;o 2.00 NFe</div></td>
               <td><input name="schema" type="text" id="schema" value="<?php echo $schemes;?>" size="30" maxlength="200"></td>
               <td><i>Indique a versão do schema (veja pasta schemes)</i></td>
             </tr>
+            <tr>
+              <td><div align="right">Vers&atilde;o 1.00 CTe</div></td>
+              <td><input name="schemacte" type="text" id="schemacte" value="<?php echo $schemesCTe;?>" size="30" maxlength="200"></td>
+              <td><i>Indique a versão do schema CTe (veja pasta schemes)</i></td>
+            </tr>
+
             <tr bgcolor="#999999">
               <td colspan="3"><strong>Configura&ccedil;&atilde;o do DANFE</strong></td>
             </tr>
@@ -672,6 +768,68 @@ class moduleCheck {
               <td><input name="logo" type="text" id="logo" value="<?php echo $danfeLogo;?>" size="30" maxlength="200"></td>
               <td><i>Nome do arquivo da logomarca</i></td>
             </tr>
+
+            <tr bgcolor="#999999">
+              <td colspan="3"><strong>Configura&ccedil;&atilde;o do DACTE</strong></td>
+            </tr>
+            <tr>
+              <td><div align="right">Formato</div></td>
+              <td>
+                <select name="formatocte" id="formatocte">
+                    <option value="P" <?php echo $selcteFormP;?>>Portraite</option>
+                    <option value="L" <?php echo $selcteFormL;?>>Landscape</option>
+                </select>
+              </td>
+              <td><i>Formato padrão do DACTE</i></td>
+            </tr>
+            <tr>
+              <td><div align="right">Papel</div></td>
+              <td><input name="papelcte" type="text" id="papelcte" value="<?php echo $dactePapel;?>" size="2" maxlength="2"></td>
+              <td><i>Sempre deve ser A4</i></td>
+            </tr>
+            <tr>
+              <td><div align="right">Canhoto</div></td>
+              <td>
+                  <select name="canhotocte" size="1" id="canhotocte">
+                    <option value="1" <?php echo $selcteCanh1;?>>TRUE</option>
+                    <option value="0" <?php echo $selcteCanh0;?>>FALSE</option>
+                  </select>
+              </td>
+              <td><i>O padrão é sempre com canhoto</i></td>
+            </tr>
+            <tr>
+                <td><div align="right">Posição do Logo</div></td>
+                <td>
+                    <select name="logoposcte" size="1" id="logoposcte">
+                    <option value="L" <?php echo $selctedposL;?>>Left</option>
+                    <option value="C" <?php echo $selctedposC;?>>Center</option>
+                    <option value="R" <?php echo $selctedposR;?>>Rigth</option>
+                  </select>
+                </td>
+                <td><i>Posição da Logomarca no DACTE</i></td>
+            </tr>
+            <tr>
+                <td><div align="right">Fonte</div></td>
+                <td>
+                    <select name="fontecte" size="1" id="fontecte">
+                        <option value="Times"<?php echo $selcteFont0;?>>Times</option>
+                        <option value="Helvetica"<?php echo $selcteFont1;?>>Helvetica</option>
+                        <option value="Corrier"<?php echo $selcteFont2;?>>Corrier</option>
+                    </select>
+                </td>
+                <td><i>Fonte padrão TIMES</i></td>
+            </tr>
+            <tr>
+              <td><div align="right">Impressora</div></td>
+              <td><input name="printercte" type="text" id="printercte" value="<?php echo $dactePrinter;?>" size="20" maxlength="40"></td>
+              <td><i>Nome da impressora padrão</i></td>
+            </tr>
+            <tr>
+              <td><div align="right">Logo</div></td>
+              <td><input name="logocte" type="text" id="logocte" value="<?php echo $dacteLogo;?>" size="30" maxlength="200"></td>
+              <td><i>Nome do arquivo da logomarca</i></td>
+            </tr>
+
             <tr bgcolor="#999999">
               <td colspan="3"><strong>Configura&ccedil;&atilde;o do email</strong></td>
             </tr>
@@ -762,6 +920,11 @@ class moduleCheck {
               <td><div align="right">MailIMAP Box</div></td>
               <td><input name="mailimapbox" type="text" id="mailimapbox" value="<?php echo $mailIMAPbox;?>" size="20" maxlength="100"></td>
               <td><i>Caixa de Entrada IMAP (ex. INBOX)</i></td>
+            </tr>
+            <tr>
+              <td><div align="right">LayOut email File</div></td>
+              <td><input name="maillayout" type="text" id="maillayout" value="<?php echo $mailLayoutFile;?>" size="20" maxlength="100"></td>
+              <td><i>Nome arquivo html (UTF8) do template para o corpo do email (na pasta config)</i></td>
             </tr>
             <tr bgcolor="#999999">
               <td colspan="3"><strong>Configura&ccedil;&atilde;o de Proxy</strong></td>
