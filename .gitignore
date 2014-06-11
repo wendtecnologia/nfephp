@@ -3,4 +3,5 @@ nbproject
 vendor
 /.project
 /.buildpath
-/.settings/
+/.settings
+/.ideia
