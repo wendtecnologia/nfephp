@@ -23,7 +23,7 @@
  *
  * @package     NFePHP
  * @name        DanfeNFePHP.class.php
- * @version     2.1.37
+ * @version     2.1.39
  * @license     http://www.gnu.org/licenses/gpl.html GNU/GPL v.3
  * @license     http://www.gnu.org/licenses/lgpl.html GNU/LGPL v.3
  * @copyright   2009-2012 &copy; NFePHP
@@ -97,7 +97,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
     protected $destino = 'I'; //destivo do arquivo pdf I-borwser, S-retorna o arquivo, D-força download, F-salva em arquivo local
     protected $pdfDir=''; //diretorio para salvar o pdf com a opção de destino = F
     protected $fontePadrao='Times'; //Nome da Fonte para gerar o DANFE
-    protected $version = '2.1.35';
+    protected $version = '2.1.38';
     protected $textoAdic = '';
     protected $wAdic = 0;
     protected $wPrint; //largura imprimivel
@@ -347,8 +347,10 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         }
         //verifica se será impresso a linha dos serviços ISSQN
         $linhaISSQN = 0;
-        if ( isset($this->ISSQNtot) ){
-            if ($this->ISSQNtot->getElementsByTagName("vServ")->item(0)->nodeValue > 0 ) {
+        if (isset($this->ISSQNtot)) {
+            $itemTemp = !empty($this->ISSQNtot->getElementsByTagName("vServ")->item(0)->nodeValue) ?
+                    $this->ISSQNtot->getElementsByTagName("vServ")->item(0)->nodeValue : 0;
+            if ($itemTemp > 0) {
                 $linhaISSQN = 1;
             }
         }
@@ -364,7 +366,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
             $txRetCNPJ = !empty($this->retirada->getElementsByTagName("CNPJ")->item(0)->nodeValue) ? $this->retirada->getElementsByTagName("CNPJ")->item(0)->nodeValue : '';
             $txRetxLgr = !empty($this->retirada->getElementsByTagName("xLgr")->item(0)->nodeValue) ? $this->retirada->getElementsByTagName("xLgr")->item(0)->nodeValue : '';
             $txRetnro = !empty($this->retirada->getElementsByTagName("nro")->item(0)->nodeValue) ? $this->retirada->getElementsByTagName("nro")->item(0)->nodeValue : 's/n';
-            $txtRetxCpl = $this->__simpleGetValue( $this->retirada , "xCpl" , " - ");
+            $txRetxCpl = $this->__simpleGetValue( $this->retirada , "xCpl" , " - ");
             $txRetxBairro = !empty($this->retirada->getElementsByTagName("xBairro")->item(0)->nodeValue) ? $this->retirada->getElementsByTagName("xBairro")->item(0)->nodeValue : '';
             $txRetxMun = !empty($this->retirada->getElementsByTagName("xMun")->item(0)->nodeValue) ? $this->retirada->getElementsByTagName("xMun")->item(0)->nodeValue : '';
             $txRetUF = !empty($this->retirada->getElementsByTagName("UF")->item(0)->nodeValue) ? $this->retirada->getElementsByTagName("UF")->item(0)->nodeValue : '';
@@ -2298,7 +2300,7 @@ class DanfeNFePHP extends CommonNFePHP implements DocumentoNFePHP
         $texto = 'VALOR TOTAL DO ISSQN';
         $aFont = array('font'=>$this->fontePadrao,'size'=>6,'style'=>'');
         $this->__textBox($x,$y,$w,$h,$texto,$aFont,'T','L',1,'');
-        if ( isset($this->ISSQNtot) ){
+        if (isset($this->ISSQNtot)) {
             $texto = !empty($this->ISSQNtot->getElementsByTagName("vISS")->item(0)->nodeValue) ? $this->ISSQNtot->getElementsByTagName("vISS")->item(0)->nodeValue : '';
             $texto = !empty($texto) ? number_format($texto, 2, ",", ".") : '';
         } else {
