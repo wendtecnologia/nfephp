@@ -3,6 +3,7 @@
 	ESTE CÓDIGO ESTA SOB A LICENSA CREATIVE COMMONS BY SA
 	DESENVOLVIDO POR - ROBERTO SPADIM <roberto at spadim dot com dot br>
 	2012/10/06 - Brasil
+	atualizado em 03/06/2014 para usar cte 2.00
 	
 	
 	arquivos gerados pelo software emissor
@@ -20,7 +21,7 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
  *					'avisos'=>array( array de aviso que deixam o XML ser gerado, mas pode ter alterado o dado do TXT original )
  *				)
  */
-	public $campos_v104=array(
+	public $campos_v200=array(
 		"CTE"		=>"CTE|versao|Id|",
 		"IDE"		=>"IDE|cUF|cCT|CFOP|natOp|forPag|mod|serie|nCT|dhEmi|tpImp|tpEmis|cDV|tpAmb|tpCTe|procEmi|verProc|refCTE|cMunEnv|xMunEnv|UFEnv|modal|tpServ|cMunIni|xMunIni|UFIni|cMunFim|xMunFim|UFFim|retira|xDetRetira|dhCont|xJust|",
 		"TOMA03"	=>"TOMA03|toma|",
@@ -39,9 +40,6 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 		"OBSFISCO"	=>"OBSFISCO|xCampo|xTexto|",
 		"EMIT"		=>"EMIT|CNPJ|IE|xNome|xFant|xLgr|nro|xCpl|xBairro|cMun|xMun|CEP|UF|fone|",
 		"REM"		=>"REM|CNPJ|CPF|IE|xNome|xFant|xLgr|nro|xCpl|xBairro|cMun|xMun|CEP|UF|cPais|xPais|fone|",
-		"INFNFE"	=>"INFNFE|chave|PIN|",
-		"INFOUTROS"	=>"INFOUTROS|tpDoc|descOutros|nDoc|dEmi|vDocFisc|",
-		"INFNF"		=>"INFNF|nRoma|nPed|mod|serie|nDoc|dEmi|vBC|vICMS|vBCST|vST|vProd|vNF|nCFOP|nPeso|PIN|",
 		"LOCRET"	=>"LOCRET|CNPJ|CPF|xNome|xLgr|Nro|xCpl|xBairro|cMun|xMun|UF|",
 		"EXPED"		=>"EXPED|CNPJ|CPF|IE|xNome|xLgr|nro|xCpl|xBairro|cMun|xMun|CEP|UF|cPais|xPais|fone|",
 		"RECEB"		=>"RECEB|CNPJ|CPF|IE|xNome|xLgr|nro|xCpl|xBairro|cMun|xMun|CEP|UF|cPais|xPais|fone|",
@@ -62,6 +60,10 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 		"INFQ"		=>"INFQ|cUnid|tpMed|qCarga|",
 		"CONTQT"	=>"CONTQT|nCont|dPrev|",
 		"LACCONTQT"	=>"LACCONTQT|nLacre|",
+		"INFDOC"	=>"INFDOC|",
+		"INFNFE"	=>"INFNFE|chave|PIN|",
+		"INFOUTROS"	=>"INFOUTROS|tpDoc|descOutros|nDoc|dEmi|vDocFisc|",
+		"INFNF"		=>"INFNF|nRoma|nPed|mod|serie|nDoc|dEmi|vBC|vICMS|vBCST|vST|vProd|vNF|nCFOP|nPeso|PIN|",
 		"DOCANT"	=>"DOCANT|",
 		"EMIDOCANT"	=>"EMIDOCANT|CNPJ|CPF|IE|UF|xNome|",
 		"IDDOCANTPAP"	=>"IDDOCANTPAP|tpDoc|serie|subser|nDoc|dEmi|",
@@ -86,7 +88,7 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 
 	);
 		// quais tags podem precender a tag atual
-	protected $campos_v104_lasttag=array(
+	protected $campos_v200_lasttag=array(
 	//	'IDE'
 			'TOMA03'	=>array('IDE'),
 			'TOMA4'		=>array('IDE'),
@@ -111,19 +113,14 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 						'SEMDATA','COMDATA','NOPERIODO',
 						'SEMHORA','COMHORA','NOINTER','OBSCONT','OBSFISCO'),
 		'REM'			=>array('EMIT'),
-			'INFNFE'	=>array('REM','INFNFE'),
-			'INFOUTROS'	=>array('REM','INFOUTROS'),
-			'INFNF'		=>array('REM','INFNF'),
-				'LOCRET'=>array('INFNF'),
-		'EXPED'			=>array('EMIT','REM',
-							'INFNFE','INFOUTROS','INFNF','LOCRET'),
-		'RECEB'			=>array('EMIT','REM','EXPED',
-							'INFNFE','INFOUTROS','INFNF','LOCRET'),
-		'DEST'			=>array('EMIT','REM','EXPED','RECEB',
-							'INFNFE','INFOUTROS','INFNF','LOCRET'),
+		'EXPED'			=>array('EMIT','REM'),
+		'RECEB'			=>array('EMIT','REM','EXPED'),//,
+							//'INFNFE','INFOUTROS','INFNF','LOCRET'),
+		'DEST'			=>array('EMIT','REM','EXPED','RECEB'),//,
+							//'INFNFE','INFOUTROS','INFNF','LOCRET'),
 			'LOCENT'	=>array('DEST'),
-		'VPREST'		=>array('EMIT','REM','EXPED','RECEB','DEST','LOCENT',
-							'INFNFE','INFOUTROS','INFNF','LOCRET'),
+		'VPREST'		=>array('EMIT','REM','EXPED','RECEB','DEST','LOCENT'),//,
+							//'INFNFE','INFOUTROS','INFNF','LOCRET'),
 			'COMP'		=>array('VPREST'),
 		'IMP'			=>array('VPREST','COMP'),
 			'ICMS00'	=>array('IMP'),
@@ -140,7 +137,15 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 			'INFQ'		=>array('INFCARGA'),
 		'CONTQT'		=>array('INFCARGA','INFQ'),
 			'LACCONTQT'	=>array('CONTQT'),
-		'DOCANT'		=>array('INFCARGA','INFQ','CONTQT','LACCONTQT'),
+
+		'INFDOC'		=>array('INFCARGA','INFQ','CONTQT','LACCONTQT'),
+			'INFNFE'	=>array('INFDOC','INFNFE'),
+			'INFOUTROS'	=>array('INFDOC','INFOUTROS'),
+			'INFNF'		=>array('INFDOC','INFNF'),
+				'LOCRET'=>array('INFNF'),
+
+		'DOCANT'		=>array('INFDOC','INFCARGA','INFQ','CONTQT','LACCONTQT',
+						'INFNFE','INFOUTROS','INFNF','LOCRET'),
 			'EMIDOCANT'	=>array('DOCANT'),
 				'IDDOCANTPAP'	=>array('EMIDOCANT','IDDOCANTPAP','IDDOCANTELE'),
 				'IDDOCANTELE'	=>array('EMIDOCANT','IDDOCANTPAP','IDDOCANTELE'),
@@ -219,10 +224,10 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 	private function _TXT2XML_verifica_last_tag(& $last_tag_array, $last_tag, $cur_tag, & $RETURN){
 		if(!isset($last_tag_array[$cur_tag]))
 			return;
-		if(	!in_array($last_tag,	$this->campos_v104_lasttag[$cur_tag]) && 
-			!is_array(		$this->campos_v104_lasttag[$cur_tag]))
+		if(	!in_array($last_tag,	$this->campos_v200_lasttag[$cur_tag]) && 
+			!is_array(		$this->campos_v200_lasttag[$cur_tag]))
 			$RETURN['erros'][]="$MSG_PADRAO Ultima tag $last_tag, não esta em: ". 
-				implode(', ',	$this->campos_v104_lasttag[$cur_tag]);
+				implode(', ',	$this->campos_v200_lasttag[$cur_tag]);
 		return;
 	}
 	private function _TXT2XML_processa_txt($string){
@@ -272,7 +277,7 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 				// REGISTROSCTE|qtd ctes fiscais no arquivo| 
 				$campos=explode("|","REGISTROSCTE|qtd ctes no arquivo|");
 				$MSG_PADRAO="[Linha $cur_linha, TAG $TAG]";
-				$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, $TAG, $RETURN);
+				$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, $TAG, $RETURN);
 				if(count($v)!=count($campos))
 					$RETURN['avisos'][]="$MSG_PADRAO Quantidade de campos na tag (".count($v).") é diferente de ".count($campos);
 				if(!isset($v[1])){
@@ -292,18 +297,18 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 				continue;
 			}elseif($TAG==='CTE'){
 				//CTE|versão do schema|id| 
-				$campos=explode('|',$this->campos_v104[$TAG]);	// $this->campos_v104[$TAG] é oq tem mais campos
+				$campos=explode('|',$this->campos_v200[$TAG]);	// $this->campos_v200[$TAG] é oq tem mais campos
 				// cria nova cte
 				$cur_cte++;
 				$cur_cte_tags	=array();
 				$MSG_PADRAO="[Linha $cur_linha, CTe $cur_cte, TAG $TAG]";
-				$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, $TAG, $RETURN);
+				$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, $TAG, $RETURN);
 				if(count($v)!=count($campos))
 					$RETURN['avisos'][]="$MSG_PADRAO Quantidade de campos na tag é diferente de ".count($campos);
 				if(!isset($v[1])){
-					$RETURN['erros'][]="$MSG_PADRAO campo 'versao' não informado, considerando como 1.04";
-				}elseif($v[1]!=='1.04'){
-					$RETURN['aviso'][]="$MSG_PADRAO campo 'versao' diferente de 1.04, esta não é a ultima versão da CTe";
+					$RETURN['erros'][]="$MSG_PADRAO campo 'versao' não informado, considerando como 2.00";
+				}elseif($v[1]!=='2.00'){
+					$RETURN['aviso'][]="$MSG_PADRAO campo 'versao' diferente de 2.00, esta não é a ultima versão da CTe";
 				}
 				if(!isset($v[2])){
 					$RETURN['avisos'][]="$MSG_PADRAO campo 'id' não informado, considerando como em branco";
@@ -319,33 +324,33 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 							'Id'		=>$v[2]);
 				$last_tag=$TAG;
 				continue;
-			}elseif($cur_versao==='1.04'){
-				///////////////// VERSÃO 1.04
-				if(!isset($this->campos_v104[$TAG])){
+			}elseif($cur_versao==='2.00'){
+				///////////////// VERSÃO 2.00
+				if(!isset($this->campos_v200[$TAG])){
 					$RETURN['erros'][]="$MSG_PADRAO Tag não existe no layout TXT";
 					continue;
 				}
-				$campos=explode("|",$this->campos_v104[$TAG]);
+				$campos=explode("|",$this->campos_v200[$TAG]);
 #print_r($campos);
 #print_r($v);				
 				// TAGS QUE SÓ APARECEM 1 VEZ:
 				if(in_array($TAG,array(
-					'IDE','TOMA03','TOMA04',
+					'IDE','TOMA03','TOMA4',
 					'COMPL','FLUXO',
 					'ENTREGA',	'SEMDATA','COMDATA','NOPERIODO',
 							'SEMHORA','COMHORA','NOINTER',
 					'EMIT','REM','LOCRET','EXPED','RECEB','DEST','LOCENT',
 					'VPREST','IMP','ICMS00','ICMS20','ICMS45','ICMS60','ICMS90','ICMSOutraUF','ICMSSN',
 					'INFCTENORM','INFCARGA','DOCANT','SEG','INFMODAL','COBR','FAT',
-					'RODO'))){
+					'RODO','INFDOC'))){
 					if($cur_cte_tags[$TAG]!=1){
 						$RETURN['erros'][]="$MSG_PADRAO TAG informada mais de uma vez, ignorando linha. #01";
 						continue;
 					}
 				}
 				if(!isset($cur_cte_tags['IDE']) && $TAG!='IDE'){
-					$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, 'IDE', $RETURN);
-					$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'IDE', $this->campos_v104, $RETURN, $cur_cte_tags, $cur_cte);
+					$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, 'IDE', $RETURN);
+					$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'IDE', $this->campos_v200, $RETURN, $cur_cte_tags, $cur_cte);
 					$last_tag='IDE';
 				}
 				if($TAG=='TOMA03' || $TAG=='TOMA4'){
@@ -359,14 +364,14 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 					}
 				}elseif($TAG=='PASS'){
 					if(!isset($cur_cte_tags['FLUXO'])){
-						$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, 'FLUXO', $RETURN);
-						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'FLUXO', $this->campos_v104, $RETURN, $cur_cte_tags, $cur_cte);
+						$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, 'FLUXO', $RETURN);
+						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'FLUXO', $this->campos_v200, $RETURN, $cur_cte_tags, $cur_cte);
 						$last_tag='FLUXO';
 					}
 				}elseif($TAG=='SEMDATA' || $TAG=='COMDATA' || $TAG=='NOPERIODO'){
 					if(!isset($cur_cte_tags['ENTREGA'])){
-						$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, 'ENTREGA', $RETURN);
-						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'ENTREGA', $this->campos_v104, $RETURN, $cur_cte_tags, $cur_cte);
+						$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, 'ENTREGA', $RETURN);
+						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'ENTREGA', $this->campos_v200, $RETURN, $cur_cte_tags, $cur_cte);
 						$last_tag='ENTREGA';
 					}
 					if(isset($cur_cte_tags['SEMDATA']) && $TAG!='SEMDATA'){
@@ -383,13 +388,13 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 					}
 				}elseif($TAG=='SEMHORA' || $TAG=='COMHORA' || $TAG=='NOINTER'){
 					if(!isset($cur_cte_tags['ENTREGA'])){
-						$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, 'ENTREGA', $RETURN);
-						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'ENTREGA', $this->campos_v104, $RETURN, $cur_cte_tags, $cur_cte);
+						$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, 'ENTREGA', $RETURN);
+						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'ENTREGA', $this->campos_v200, $RETURN, $cur_cte_tags, $cur_cte);
 						$last_tag='ENTREGA';
 					}
 					if(!isset($cur_cte_tags['SEMDATA']) && !isset($cur_cte_tags['COMDATA']) && !isset($cur_cte_tags['NOPERIODO'])){
-						$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, 'SEMDATA', $RETURN);
-						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'SEMDATA', $this->campos_v104, $RETURN, $cur_cte_tags, $cur_cte);
+						$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, 'SEMDATA', $RETURN);
+						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'SEMDATA', $this->campos_v200, $RETURN, $cur_cte_tags, $cur_cte);
 						$last_tag='SEMDATA';
 					}
 					
@@ -412,10 +417,10 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 						continue;
 					}
 				}elseif($TAG=='INFNFE' || $TAG=='INFNF' || $TAG=='INFOUTROS'){
-					if(!isset($cur_cte_tags['REM'])){
-						$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, 'REM', $RETURN);
-						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'REM', $this->campos_v104, $RETURN, $cur_cte_tags, $cur_cte);
-						$last_tag='REM';
+					if(!isset($cur_cte_tags['INFDOC'])){
+						$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, 'INFDOC', $RETURN);
+						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'INFDOC', $this->campos_v200, $RETURN, $cur_cte_tags, $cur_cte);
+						$last_tag='INFDOC';
 					}
 					if($TAG=='INFNF')
 						unset($cur_cte_tags['LOCRET']);
@@ -423,27 +428,27 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 						unset($cur_cte_tags['INFNF']);	// PRA PODER ADICIONAR O 'LOCRET'
 				}elseif($TAG=='LOCRET'){
 					if(!isset($cur_cte_tags['INFNF'])){
-						$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, 'INFNF', $RETURN);
-						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'INFNF', $this->campos_v104, $RETURN, $cur_cte_tags, $cur_cte);
+						$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, 'INFNF', $RETURN);
+						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'INFNF', $this->campos_v200, $RETURN, $cur_cte_tags, $cur_cte);
 						$last_tag='INFNF';
 					}
 				}elseif($TAG=='LOCENT'){
 					if(!isset($cur_cte_tags['DEST'])){
-						$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, 'DEST', $RETURN);
-						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'DEST', $this->campos_v104, $RETURN, $cur_cte_tags, $cur_cte);
+						$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, 'DEST', $RETURN);
+						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'DEST', $this->campos_v200, $RETURN, $cur_cte_tags, $cur_cte);
 						$last_tag='DEST';
 					}
 				}elseif($TAG=='COMP'){
 					if(!isset($cur_cte_tags['VPREST'])){
-						$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, 'VPREST', $RETURN);
-						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'VPREST', $this->campos_v104, $RETURN, $cur_cte_tags, $cur_cte);
+						$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, 'VPREST', $RETURN);
+						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'VPREST', $this->campos_v200, $RETURN, $cur_cte_tags, $cur_cte);
 						$last_tag='VPREST';
 					}
 				}elseif(in_array($TAG,array(
 						'ICMS00','ICMS20','ICMS45','ICMS60','ICMS90','ICMSOutraUF','ICMSSN'))){
 					if(!isset($cur_cte_tags['IMP'])){
-						$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, 'VPREST', $RETURN);
-						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'VPREST', $this->campos_v104, $RETURN, $cur_cte_tags, $cur_cte);
+						$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, 'VPREST', $RETURN);
+						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'VPREST', $this->campos_v200, $RETURN, $cur_cte_tags, $cur_cte);
 						$last_tag='VPREST';
 					}
 					$tmp_arr=array('ICMS00','ICMS20','ICMS45','ICMS60','ICMS90','ICMSOutraUF','ICMSSN');
@@ -455,59 +460,59 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 					unset($vv,$tmp_arr);
 				}elseif($TAG=='INFCARGA' || $TAG=='CONTQT'){
 					if(!isset($cur_cte_tags['INFCTENORM'])){
-						$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, 'INFCTENORM', $RETURN);
-						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'INFCTENORM', $this->campos_v104, $RETURN, $cur_cte_tags, $cur_cte);
+						$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, 'INFCTENORM', $RETURN);
+						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'INFCTENORM', $this->campos_v200, $RETURN, $cur_cte_tags, $cur_cte);
 						$last_tag='INFCTENORM';
 					}
 				}elseif($TAG=='INFQ'){
 					if(!isset($cur_cte_tags['INFCARGA'])){
-						$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, 'INFCARGA', $RETURN);
-						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'INFCARGA', $this->campos_v104, $RETURN, $cur_cte_tags, $cur_cte);
+						$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, 'INFCARGA', $RETURN);
+						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'INFCARGA', $this->campos_v200, $RETURN, $cur_cte_tags, $cur_cte);
 						$last_tag='INFCARGA';
 					}
 				
 				}elseif($TAG=='LACCONTQT'){
 					if(!isset($cur_cte_tags['CONTQT'])){
-						$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, 'CONTQT', $RETURN);
-						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'CONTQT', $this->campos_v104, $RETURN, $cur_cte_tags, $cur_cte);
+						$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, 'CONTQT', $RETURN);
+						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'CONTQT', $this->campos_v200, $RETURN, $cur_cte_tags, $cur_cte);
 						$last_tag='CONTQT';
 					}
 				}elseif($TAG=='EMIDOCANT'){
 					if(!isset($cur_cte_tags['DOCANT'])){
-						$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, 'DOCANT', $RETURN);
-						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'DOCANT', $this->campos_v104, $RETURN, $cur_cte_tags, $cur_cte);
+						$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, 'DOCANT', $RETURN);
+						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'DOCANT', $this->campos_v200, $RETURN, $cur_cte_tags, $cur_cte);
 						$last_tag='DOCANT';
 					}
 				}elseif($TAG=='IDDOCANTPAP' || $TAG=='IDDOCANTELE'){
 					if(!isset($cur_cte_tags['EMIDOCANT'])){
-						$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, 'EMIDOCANT', $RETURN);
-						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'EMIDOCANT', $this->campos_v104, $RETURN, $cur_cte_tags, $cur_cte);
+						$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, 'EMIDOCANT', $RETURN);
+						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'EMIDOCANT', $this->campos_v200, $RETURN, $cur_cte_tags, $cur_cte);
 						$last_tag='EMIDOCANT';
 					}
 					
 				// rodoviário
 				}elseif($TAG=='RODO'){
 					if(!isset($cur_cte_tags['INFMODAL'])){
-						$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, 'INFMODAL', $RETURN);
-						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'INFMODAL', $this->campos_v104, $RETURN, $cur_cte_tags, $cur_cte);
+						$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, 'INFMODAL', $RETURN);
+						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'INFMODAL', $this->campos_v200, $RETURN, $cur_cte_tags, $cur_cte);
 						$last_tag='INFMODAL';
 					}
 				}elseif($TAG=='OCC'){
 					if(!isset($cur_cte_tags['RODO'])){
-						$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, 'RODO', $RETURN);
-						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'RODO', $this->campos_v104, $RETURN, $cur_cte_tags, $cur_cte);
+						$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, 'RODO', $RETURN);
+						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'RODO', $this->campos_v200, $RETURN, $cur_cte_tags, $cur_cte);
 						$last_tag='RODO';
 					}
 				}elseif($TAG=='EMIOCC'){
 					if(!isset($cur_cte_tags['EMIOCC'])){
-						$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, 'EMIOCC', $RETURN);
-						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'EMIOCC', $this->campos_v104, $RETURN, $cur_cte_tags, $cur_cte);
+						$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, 'EMIOCC', $RETURN);
+						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'EMIOCC', $this->campos_v200, $RETURN, $cur_cte_tags, $cur_cte);
 						$last_tag='EMIOCC';
 					}
 				}elseif($TAG=='PROP'){
 					if(!isset($cur_cte_tags['VEIC'])){
-						$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, 'VEIC', $RETURN);
-						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'VEIC', $this->campos_v104, $RETURN, $cur_cte_tags, $cur_cte);
+						$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, 'VEIC', $RETURN);
+						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'VEIC', $this->campos_v200, $RETURN, $cur_cte_tags, $cur_cte);
 						$last_tag='VEIC';
 					}
 				
@@ -515,12 +520,12 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 				/////
 				}elseif($TAG=='FAT' || $TAG=='DUP'){
 					if(!isset($cur_cte_tags['COBR'])){
-						$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, 'COBR', $RETURN);
-						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'COBR', $this->campos_v104, $RETURN, $cur_cte_tags, $cur_cte);
+						$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, 'COBR', $RETURN);
+						$this->_TXT2XML_processa_txt_tag_embranco($MSG_PADRAO,'COBR', $this->campos_v200, $RETURN, $cur_cte_tags, $cur_cte);
 						$last_tag='COBR';
 					}
 				}
-				$this->_TXT2XML_verifica_last_tag($this->campos_v104_lasttag, $last_tag, $TAG, $RETURN);
+				$this->_TXT2XML_verifica_last_tag($this->campos_v200_lasttag, $last_tag, $TAG, $RETURN);
 				$RETURN['docs'][$cur_cte][]=$this->_TXT2XML_processa_txt_tag($MSG_PADRAO,$v,$campos,$RETURN);
 				$last_tag=$TAG;
 				continue;
@@ -543,9 +548,9 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 		$RETURN=array(	'erros'	=>array(),
 				'avisos'=>array(),
 				'xml'	=>'');
-		// caso não seja versão 1.04 usar função "_TXT2XML_processa_txt_converte_versao($array)" ou fazer um if ($cur_version pra cada campo...)
+		// caso não seja versão 2.00 usar função "_TXT2XML_processa_txt_converte_versao($array)" ou fazer um if ($cur_version pra cada campo...)
 		foreach($array_ctes as $kcte=>$v){
-			unset(	$dom, $CTe,$infCte, $ide, $COMPL, $FLUXO, $ENTREGA, $REM, $INFNF, $DEST, $VPREST, $IMP, $INFCTENORM, $INFCARGA, $CONTQT, $DOCANT, $EMIDOCANT, $IDDOCANT, $INFMODAL, $RODO, $RODO_OCC, $RODO_VEIC, $COBR, 
+			unset(	$dom, $CTe,$infCte, $ide, $COMPL, $FLUXO, $ENTREGA, $REM, $INFNF, $DEST, $VPREST, $IMP, $INFCTENORM, $INFCARGA, $CONTQT, $DOCANT, $INFDOC, $EMIDOCANT, $IDDOCANT, $INFMODAL, $RODO, $RODO_OCC, $RODO_VEIC, $COBR, 
 				$IDE_dhCont, $TMP_ADD_COMPL, $FLUXO_xDest,$FLUXO_xRota,$CONTQT_dPrev, $cur_version);
 			$dom=new DOMDocument('1.0', 'UTF-8');
 			$dom->formatOutput = true;
@@ -553,6 +558,7 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 			$cur_version='';
 			// limpar variaveis utilizadas...
 			foreach($v as $v2){
+#echo $v2['TAG']."\n";
 				if($v2['TAG']=='CTE'){
 					// CRIA CTE
 					$cur_version=$v2['versao'];
@@ -561,14 +567,14 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 					$infCte	=$dom->createElement("infCte");
 					$infCte->setAttribute("Id", $v2['Id']);
 					$infCte->setAttribute("versao", $v2['versao']);
-				}elseif($cur_version=='1.04'){
-					// versão 1.04
+				}elseif($cur_version=='2.00'){
+					// versão 2.00
 					$MSG_PADRAO="[TAG ".$v2['TAG'].", CTe $kcte]";
-					if(!isset($this->campos_v104[$v2['TAG']])){ //tag não existe
-						$RETURN['avisos'][$kcte][]="$MSG_PADRAO TAG ".$v2['TAG']." não encontrada nos campos da versão 1.04";
+					if(!isset($this->campos_v200[$v2['TAG']])){ //tag não existe
+						$RETURN['avisos'][$kcte][]="$MSG_PADRAO TAG ".$v2['TAG']." não encontrada nos campos da versão 2.00";
 						continue;
 					}
-					$campos=explode('|',$this->campos_v104[$v2['TAG']]);
+					$campos=explode('|',$this->campos_v200[$v2['TAG']]);
 					unset($campos[0]);	// campo da tag
 					foreach($campos as $k=>$nome_campo){
 						if(strlen(trim($nome_campo))==0){
@@ -582,7 +588,7 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 							$last_len=strlen($v2[$nome_campo]);
 							$v2[$nome_campo]=trim($v2[$nome_campo]);
 							if($last_len!=strlen($v2[$nome_campo])){
-								$RETURN['avisos'][$cte][]="$MSG_PADRAO Alterado o tamanho do campo $nome_campo após TRIM de $last_len para ".strlen($v2[$nome_campo]);
+								$RETURN['avisos'][$kcte][]="$MSG_PADRAO Alterado o tamanho do campo $nome_campo após TRIM de $last_len para ".strlen($v2[$nome_campo]);
 							}
 						}
 					}
@@ -626,8 +632,8 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 						}else{
 							$ide->appendChild($tmp_grupo);
 						}
-					}elseif($v2['TAG']=='TOMA04'){
-						$tmp_grupo	=$dom->createElement("toma04");
+					}elseif($v2['TAG']=='TOMA44'){
+						$tmp_grupo	=$dom->createElement("toma4");
 						$tmp_grupo2	=$dom->createElement("enderToma");
 						$cur_grupo	=& $tmp_grupo;
 						// campo 'email' não existe no TXT
@@ -652,7 +658,7 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 								// adiciona o fone primeiro....
 								if($nome_campo=='fone' && !empty($v2[$nome_campo]))
 									$tmp_grupo->appendChild( $dom->createElement($nome_campo,$v2[$nome_campo]) );
-								unset($tmp_grupo);
+								unset($cur_grupo);
 								// volta a preencher o 'toma04'
 								$tmp_grupo->appendChild( $tmp_grupo2 );
 								$cur_grupo = &$tmp_grupo;
@@ -805,7 +811,9 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 						$cur_grupo	=& $REM;
 						// campo 'email' não existe no TXT
 						foreach($campos as $nome_campo){
-							if(	$nome_campo=='xFant' || $nome_campo=='CEP' || $nome_campo=='xCpl'){
+							if(	$nome_campo=='CNPJ' || $nome_campo=='CPF' || 
+								$nome_campo=='xFant' || $nome_campo=='CEP' || 
+								$nome_campo=='xCpl'){
 								if(empty($v2[$nome_campo]))	
 									continue;
 							}
@@ -836,7 +844,11 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 							$cur_grupo->appendChild( $dom->createElement($nome_campo,$v2[$nome_campo]) );
 						}
 						$infCte->appendChild($REM);
-					}elseif($v2['TAG']=='INFNFE' || $v2['TAG']=='INFOUTROS'){
+					}elseif($v2['TAG']=='INFDOC' && isset($INFCTENORM)){
+						$INFDOC=$dom->createElement("infDoc");
+						$INFCTENORM->appendChild($INFDOC);
+#echo "infdoc criado";
+					}elseif(($v2['TAG']=='INFNFE' || $v2['TAG']=='INFOUTROS') && isset($INFDOC)){
 						if($v2['TAG']=='INFNFE')	$tmp_grupo	=$dom->createElement("infNFe");
 						if($v2['TAG']=='INFOUTROS')	$tmp_grupo	=$dom->createElement("infOutros");
 						foreach($campos as $nome_campo){
@@ -850,8 +862,8 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 							}
 							$tmp_grupo->appendChild( $dom->createElement($nome_campo,$v2[$nome_campo]) );
 						}
-						$REM->appendChild($tmp_grupo);
-					}elseif($v2['TAG']=='INFNF'){
+						$INFDOC->appendChild($tmp_grupo);
+					}elseif(($v2['TAG']=='INFNF') && isset($INFDOC)){
 						$INFNF	=$dom->createElement("infNF");
 						foreach($campos as $nome_campo){
 							if($nome_campo=='PIN' || $nome_campo=='nRoma' || $nome_campo=='nPed' || $nome_campo=='nPeso'){
@@ -860,7 +872,7 @@ class ConvertCteNFePHP{ //implements ConvertCTePHP{
 							}
 							$INFNF->appendChild( $dom->createElement($nome_campo,$v2[$nome_campo]) );
 						}
-						$REM->appendChild($INFNF);
+						$INFDOC->appendChild($INFNF);
 					}elseif($v2['TAG']=='LOCRET'){
 						$tmp_grupo	=$dom->createElement("locRet");
 						foreach($campos as $nome_campo){
@@ -1358,7 +1370,7 @@ return(false);
 			/// vamos lá.... processo reverso agora
 			if($versao=='2.00'){
 				// A
-				$CAMPOS	=explode('|',$this->campos_v104['A']);
+				$CAMPOS	=explode('|',$this->campos_v200['A']);
 				foreach($CAMPOS as $k=>$v)
 					if($k!=0 && strlen(trim($v))>0)
 						$CAMPOS[$k]=$infCte->getAttribute($v);	// só atributos
@@ -1371,7 +1383,7 @@ return(false);
 					$RETURN['erros'][$kcte][]="$MSG_PADRAO Tag ide não encontrada";
 					continue;
 				}
-				$CAMPOS	=explode('|',$this->campos_v104['B']);
+				$CAMPOS	=explode('|',$this->campos_v200['B']);
 				foreach($CAMPOS as $k=>$v){
 					if($k!=0 && strlen(trim($v))>0){
 #var_dump($ide);echo "v=>$v\n";
@@ -1393,7 +1405,7 @@ return(false);
 					$tmp_grupo=$NFref->getElementsByTagName("refCTe");
 					if (!empty($tmp_grupo)){
 						for($c = 0; $c<$tmp_grupo->length; $c++){
-							$CAMPOS	=explode('|',$this->campos_v104['B13']);
+							$CAMPOS	=explode('|',$this->campos_v200['B13']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->item($c)->nodeValue;
@@ -1407,7 +1419,7 @@ return(false);
 					$tmp_grupo=$NFref->getElementsByTagName("refNF");
 					if (!empty($tmp_grupo)){
 						for($c = 0; $c<$tmp_grupo->length; $c++){
-							$CAMPOS	=explode('|',$this->campos_v104['B14']);
+							$CAMPOS	=explode('|',$this->campos_v200['B14']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->item($c)->getElementsByTagName($v);
@@ -1424,7 +1436,7 @@ return(false);
 					$tmp_grupo=$NFref->getElementsByTagName("refNFP");
 					if (!empty($tmp_grupo)){
 						for($c = 0; $c<$tmp_grupo->length; $c++){
-							$CAMPOS	=explode('|',$this->campos_v104['B20a']);
+							$CAMPOS	=explode('|',$this->campos_v200['B20a']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->item($c)->getElementsByTagName($v);
@@ -1439,9 +1451,9 @@ return(false);
 							$tmp2=$tmp_grupo->item($c)->getElementsByTagName('CPF');
 							$CAMPOS=false;
 							if(!empty($tmp1)){
-								$CAMPOS	=explode('|',$this->campos_v104['B20d']);
+								$CAMPOS	=explode('|',$this->campos_v200['B20d']);
 							}elseif(!empty($tmp2)){
-								$CAMPOS	=explode('|',$this->campos_v104['B20e']);
+								$CAMPOS	=explode('|',$this->campos_v200['B20e']);
 							}
 							if ($CAMPOS!==false){
 								foreach($CAMPOS as $k=>$v){
@@ -1461,7 +1473,7 @@ return(false);
 					$tmp_grupo=$NFref->getElementsByTagName("refCTe");
 					if (!empty($tmp_grupo)){
 						for($c = 0; $c<$tmp_grupo->length; $c++){
-							$CAMPOS	=explode('|',$this->campos_v104['B20i']);
+							$CAMPOS	=explode('|',$this->campos_v200['B20i']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->item($c)->nodeValue;
@@ -1475,7 +1487,7 @@ return(false);
 					$tmp_grupo=$NFref->getElementsByTagName("refECF");
 					if (!empty($tmp_grupo)){
 						for($c = 0; $c<$tmp_grupo->length; $c++){
-							$CAMPOS	=explode('|',$this->campos_v104['B20j']);
+							$CAMPOS	=explode('|',$this->campos_v200['B20j']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->item($c)->getElementsByTagName($v);
@@ -1497,7 +1509,7 @@ return(false);
 				}
 				$emit=$infCte->getElementsByTagName("emit")->item(0);
 				if (!empty($emit)){
-					$CAMPOS	=explode('|',$this->campos_v104['C']);
+					$CAMPOS	=explode('|',$this->campos_v200['C']);
 					foreach($CAMPOS as $k=>$v){
 						if($k!=0 && strlen(trim($v))>0){
 							$CAMPOS[$k]=$emit->getElementsByTagName($v)->item(0);
@@ -1512,9 +1524,9 @@ return(false);
 					$tmp2=$emit->getElementsByTagName('CPF')->item(0);
 					$CAMPOS=false;
 					if(!empty($tmp1)){
-						$CAMPOS	=explode('|',$this->campos_v104['C02']);
+						$CAMPOS	=explode('|',$this->campos_v200['C02']);
 					}elseif(!empty($tmp2)){
-						$CAMPOS	=explode('|',$this->campos_v104['C02a']);
+						$CAMPOS	=explode('|',$this->campos_v200['C02a']);
 					}
 					if($CAMPOS!==false){
 						foreach($CAMPOS as $k=>$v){
@@ -1532,7 +1544,7 @@ return(false);
 					// C05
 					$tmp_grupo=$emit->getElementsByTagName("enderEmit")->item(0);
 					if (!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['C05']);
+						$CAMPOS	=explode('|',$this->campos_v200['C05']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v)->item(0);
@@ -1548,7 +1560,7 @@ return(false);
 				// D
 				$tmp_grupo=$infCte->getElementsByTagName("avulsa")->item(0);
 				if (!empty($tmp_grupo)){
-					$CAMPOS	=explode('|',$this->campos_v104['D']);
+					$CAMPOS	=explode('|',$this->campos_v200['D']);
 					foreach($CAMPOS as $k=>$v){
 						if($k!=0 && strlen(trim($v))>0){
 							$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -1564,7 +1576,7 @@ return(false);
 				// E, E02, E03
 				$dest=$infCte->getElementsByTagName("dest")->item(0);
 				if (!empty($dest)){
-					$CAMPOS	=explode('|',$this->campos_v104['E']);
+					$CAMPOS	=explode('|',$this->campos_v200['E']);
 					foreach($CAMPOS as $k=>$v){
 						if($k!=0 && strlen(trim($v))>0){
 							$CAMPOS[$k]=$dest->getElementsByTagName($v)->item(0);
@@ -1579,9 +1591,9 @@ return(false);
 					$tmp2=$dest->getElementsByTagName('CPF')->item(0);
 					$CAMPOS=false;
 					if(!empty($tmp1)){
-						$CAMPOS	=explode('|',$this->campos_v104['E02']);
+						$CAMPOS	=explode('|',$this->campos_v200['E02']);
 					}elseif(!empty($tmp2)){
-						$CAMPOS	=explode('|',$this->campos_v104['E03']);
+						$CAMPOS	=explode('|',$this->campos_v200['E03']);
 					}
 					if($CAMPOS!==false){
 						foreach($CAMPOS as $k=>$v){
@@ -1598,7 +1610,7 @@ return(false);
 					// E05
 					$tmp_grupo=$dest->getElementsByTagName("enderDest")->item(0);
 					if (!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['E05']);
+						$CAMPOS	=explode('|',$this->campos_v200['E05']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v)->item(0);
@@ -1614,7 +1626,7 @@ return(false);
 				//F, F02, F02a
 				$tmp_grupo=$infCte->getElementsByTagName("retirada")->item(0);
 				if (!empty($tmp_grupo)){
-					$CAMPOS	=explode('|',$this->campos_v104['F']);
+					$CAMPOS	=explode('|',$this->campos_v200['F']);
 					foreach($CAMPOS as $k=>$v){
 						if($k!=0 && strlen(trim($v))>0){
 							$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v)->item(0);
@@ -1629,9 +1641,9 @@ return(false);
 					$tmp2=$dest->getElementsByTagName('CPF')->item(0);
 					$CAMPOS=false;
 					if(!empty($tmp1)){
-						$CAMPOS	=explode('|',$this->campos_v104['F02']);
+						$CAMPOS	=explode('|',$this->campos_v200['F02']);
 					}elseif(!empty($tmp2)){
-						$CAMPOS	=explode('|',$this->campos_v104['F02a']);
+						$CAMPOS	=explode('|',$this->campos_v200['F02a']);
 					}
 					if($CAMPOS!==false){
 						foreach($CAMPOS as $k=>$v){
@@ -1649,7 +1661,7 @@ return(false);
 				//G, G02, G02a
 				$tmp_grupo=$infCte->getElementsByTagName("entrega")->item(0);
 				if (!empty($tmp_grupo)){
-					$CAMPOS	=explode('|',$this->campos_v104['G']);
+					$CAMPOS	=explode('|',$this->campos_v200['G']);
 					foreach($CAMPOS as $k=>$v){
 						if($k!=0 && strlen(trim($v))>0){
 							$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v)->item(0);
@@ -1664,9 +1676,9 @@ return(false);
 					$tmp2=$tmp_grupo->getElementsByTagName('CPF')->item(0);
 					$CAMPOS=false;
 					if(!empty($tmp1)){
-						$CAMPOS	=explode('|',$this->campos_v104['G02']);
+						$CAMPOS	=explode('|',$this->campos_v200['G02']);
 					}elseif(!empty($tmp2)){
-						$CAMPOS	=explode('|',$this->campos_v104['G02a']);
+						$CAMPOS	=explode('|',$this->campos_v200['G02a']);
 					}
 					if($CAMPOS!==false){
 						foreach($CAMPOS as $k=>$v){
@@ -1694,7 +1706,7 @@ return(false);
 
 					// I
 					$prod=$item->getElementsByTagName("prod")->item(0);
-					$CAMPOS	=explode('|',$this->campos_v104['I']);
+					$CAMPOS	=explode('|',$this->campos_v200['I']);
 					foreach($CAMPOS as $k=>$v){
 						if($k!=0 && strlen(trim($v))>0){
 							$CAMPOS[$k]=$prod->getElementsByTagName($v)->item(0);
@@ -1710,7 +1722,7 @@ return(false);
 					$tmp_grupo=$prod->getElementsByTagName("DI");
 					if (!empty($tmp_grupo)){
 						for($c = 0; $c<$tmp_grupo->length; $c++){
-							$CAMPOS	=explode('|',$this->campos_v104['I18']);
+							$CAMPOS	=explode('|',$this->campos_v200['I18']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->item($c)->getElementsByTagName($v);
@@ -1725,7 +1737,7 @@ return(false);
 							$tmp_grupo2=$tmp_grupo->item($c)->getElementsByTagName("adi");
 							if (!empty($tmp_grupo2)){
 								for($c2 = 0; $c2<$tmp_grupo2->length; $c2++){
-									$CAMPOS	=explode('|',$this->campos_v104['I25']);
+									$CAMPOS	=explode('|',$this->campos_v200['I25']);
 									foreach($CAMPOS as $k=>$v){
 										if($k!=0 && strlen(trim($v))>0){
 											$CAMPOS[$k]=$tmp_grupo2->item($c2)->getElementsByTagName($v);
@@ -1743,7 +1755,7 @@ return(false);
 					// J
 					$tmp_grupo=$prod->getElementsByTagName("veicProd")->item(0);
 					if (!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['J']);
+						$CAMPOS	=explode('|',$this->campos_v200['J']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$prod->getElementsByTagName($v);
@@ -1759,7 +1771,7 @@ return(false);
 					$tmp_grupo=$prod->getElementsByTagName("med");
 					if (!empty($tmp_grupo)){
 						for($c = 0; $c<$tmp_grupo->length; $c++){
-							$CAMPOS	=explode('|',$this->campos_v104['K']);
+							$CAMPOS	=explode('|',$this->campos_v200['K']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->item($c)->getElementsByTagName($v);
@@ -1776,7 +1788,7 @@ return(false);
 					$tmp_grupo=$prod->getElementsByTagName("arma");
 					if (!empty($tmp_grupo)){
 						for($c = 0; $c<$tmp_grupo->length; $c++){
-							$CAMPOS	=explode('|',$this->campos_v104['L']);
+							$CAMPOS	=explode('|',$this->campos_v200['L']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->item($c)->getElementsByTagName($v);
@@ -1795,7 +1807,7 @@ return(false);
 					if (!empty($tmp_grupo)){
 						for($c = 0; $c<$tmp_grupo->length; $c++){
 							$tmp_comb=$tmp_grupo->item($c);
-							$CAMPOS	=explode('|',$this->campos_v104['L01']);
+							$CAMPOS	=explode('|',$this->campos_v200['L01']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_comb->getElementsByTagName($v);
@@ -1809,7 +1821,7 @@ return(false);
 							// L105
 							$tmp_grupo2=$tmp_comb->getElementsByTagName("CIDE")->item(0);
 							if (!empty($tmp_grupo2)){
-								$CAMPOS	=explode('|',$this->campos_v104['L105']);
+								$CAMPOS	=explode('|',$this->campos_v200['L105']);
 								foreach($CAMPOS as $k=>$v){
 									if($k!=0 && strlen(trim($v))>0){
 										$CAMPOS[$k]=$tmp_grupo2->getElementsByTagName($v);
@@ -1850,7 +1862,7 @@ return(false);
 					
 					$tmp_grupo=$imposto->getElementsByTagName("ICMS")->item(0);
 					if (!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104[$N]);
+						$CAMPOS	=explode('|',$this->campos_v200[$N]);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -1865,7 +1877,7 @@ return(false);
 					// O
 					$tmp_grupo=$imposto->getElementsByTagName("IPI")->item(0);
 					if (!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['O']);
+						$CAMPOS	=explode('|',$this->campos_v200['O']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v)->item(0);
@@ -1880,7 +1892,7 @@ return(false);
 					// O08
 					$tmp_grupo=$imposto->getElementsByTagName("IPINT")->item(0);
 					if (!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['O08']);
+						$CAMPOS	=explode('|',$this->campos_v200['O08']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -1895,7 +1907,7 @@ return(false);
 					// O07
 					$tmp_grupo=$imposto->getElementsByTagName("IPITrib")->item(0);
 					if (!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['O07']);
+						$CAMPOS	=explode('|',$this->campos_v200['O07']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -1909,7 +1921,7 @@ return(false);
 						// O10
 						$tmp_test=$tmp_grupo->getElementsByTagName("vBC")->item(0);
 						if (!empty($tmp_test)){
-							$CAMPOS	=explode('|',$this->campos_v104['O10']);
+							$CAMPOS	=explode('|',$this->campos_v200['O10']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -1924,7 +1936,7 @@ return(false);
 						// O11
 						$tmp_test=$tmp_grupo->getElementsByTagName("QUnid")->item(0);
 						if (!empty($tmp_test)){
-							$CAMPOS	=explode('|',$this->campos_v104['O11']);
+							$CAMPOS	=explode('|',$this->campos_v200['O11']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -1940,7 +1952,7 @@ return(false);
 					//P
 					$tmp_grupo=$imposto->getElementsByTagName("II")->item(0);
 					if (!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['P']);
+						$CAMPOS	=explode('|',$this->campos_v200['P']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -1955,7 +1967,7 @@ return(false);
 					//U
 					$tmp_grupo=$imposto->getElementsByTagName("ISSQN")->item(0);
 					if (!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['U']);
+						$CAMPOS	=explode('|',$this->campos_v200['U']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -1972,7 +1984,7 @@ return(false);
 					// Q02
 					$tmp_grupo=$imposto->getElementsByTagName("PISAliq")->item(0);
 					if (!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['Q02']);
+						$CAMPOS	=explode('|',$this->campos_v200['Q02']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -1987,7 +1999,7 @@ return(false);
 					// Q03
 					$tmp_grupo=$imposto->getElementsByTagName("PISQtde")->item(0);
 					if (!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['Q03']);
+						$CAMPOS	=explode('|',$this->campos_v200['Q03']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -2002,7 +2014,7 @@ return(false);
 					// Q04
 					$tmp_grupo=$imposto->getElementsByTagName("PISNT")->item(0);
 					if (!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['Q04']);
+						$CAMPOS	=explode('|',$this->campos_v200['Q04']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -2017,7 +2029,7 @@ return(false);
 					// Q05
 					$tmp_grupo=$imposto->getElementsByTagName("PISOutr")->item(0);
 					if (!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['Q05']);
+						$CAMPOS	=explode('|',$this->campos_v200['Q05']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -2032,7 +2044,7 @@ return(false);
 						// vBC -> Q07
 						$tmp_test=$tmp_grupo->getElementsByTagName("vBC")->item(0);
 						if (!empty($tmp_test)){
-							$CAMPOS	=explode('|',$this->campos_v104['Q07']);
+							$CAMPOS	=explode('|',$this->campos_v200['Q07']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -2049,7 +2061,7 @@ return(false);
 						$tmp_test=$tmp_grupo->getElementsByTagName("qBCProd")->item(0);
 					
 						if (!empty($tmp_test)){
-							$CAMPOS	=explode('|',$this->campos_v104['Q10']);
+							$CAMPOS	=explode('|',$this->campos_v200['Q10']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -2066,7 +2078,7 @@ return(false);
 					//R
 					$tmp_grupo=$imposto->getElementsByTagName("PISST")->item(0);
 					if (!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['R']);
+						$CAMPOS	=explode('|',$this->campos_v200['R']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -2081,7 +2093,7 @@ return(false);
 						// vBC -> R02
 						$tmp_test=$tmp_grupo->getElementsByTagName("vBC")->item(0);
 						if (!empty($tmp_test)){
-							$CAMPOS	=explode('|',$this->campos_v104['R02']);
+							$CAMPOS	=explode('|',$this->campos_v200['R02']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -2097,7 +2109,7 @@ return(false);
 						// qBCProd -> R04
 						$tmp_test=$tmp_grupo->getElementsByTagName("qBCProd")->item(0);
 						if (!empty($tmp_test)){
-							$CAMPOS	=explode('|',$this->campos_v104['R04']);
+							$CAMPOS	=explode('|',$this->campos_v200['R04']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -2116,7 +2128,7 @@ return(false);
 					// S02
 					$tmp_grupo=$imposto->getElementsByTagName("COFINSAliq")->item(0);
 					if (!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['S02']);
+						$CAMPOS	=explode('|',$this->campos_v200['S02']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -2131,7 +2143,7 @@ return(false);
 					// S03
 					$tmp_grupo=$imposto->getElementsByTagName("COFINSQtde")->item(0);
 					if (!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['S03']);
+						$CAMPOS	=explode('|',$this->campos_v200['S03']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -2146,7 +2158,7 @@ return(false);
 					// S04
 					$tmp_grupo=$imposto->getElementsByTagName("COFINSNT")->item(0);
 					if (!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['S04']);
+						$CAMPOS	=explode('|',$this->campos_v200['S04']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -2161,7 +2173,7 @@ return(false);
 					// S05
 					$tmp_grupo=$imposto->getElementsByTagName("COFINSOutr")->item(0);
 					if (!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['S05']);
+						$CAMPOS	=explode('|',$this->campos_v200['S05']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -2176,7 +2188,7 @@ return(false);
 						// vBC -> S07
 						$tmp_test=$imposto->getElementsByTagName("vBC")->item(0);
 						if (!empty($tmp_test)){
-							$CAMPOS	=explode('|',$this->campos_v104['S07']);
+							$CAMPOS	=explode('|',$this->campos_v200['S07']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -2191,7 +2203,7 @@ return(false);
 						// S09
 						$tmp_test=$imposto->getElementsByTagName("qBCProd")->item(0);
 						if (!empty($tmp_test)){
-							$CAMPOS	=explode('|',$this->campos_v104['S09']);
+							$CAMPOS	=explode('|',$this->campos_v200['S09']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -2208,7 +2220,7 @@ return(false);
 					//T
 					$tmp_grupo=$imposto->getElementsByTagName("COFINSST")->item(0);
 					if (!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['T']);
+						$CAMPOS	=explode('|',$this->campos_v200['T']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -2223,7 +2235,7 @@ return(false);
 						// vBC -> T02
 						$tmp_test=$tmp_grupo->getElementsByTagName('vBC')->item(0);
 						if(!empty($tmp_test)){
-							$CAMPOS	=explode('|',$this->campos_v104['T02']);
+							$CAMPOS	=explode('|',$this->campos_v200['T02']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -2239,7 +2251,7 @@ return(false);
 						// qBCProd -> T04
 						$tmp_test=$tmp_grupo->getElementsByTagName('qBCProd')->item(0);
 						if(!empty($tmp_test)){
-							$CAMPOS	=explode('|',$this->campos_v104['T04']);
+							$CAMPOS	=explode('|',$this->campos_v200['T04']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -2263,7 +2275,7 @@ return(false);
 					$CUR_TXT.="W|\n";
 					$tmp_grupo=$total->getElementsByTagName("ICMSTot")->item(0);
 					if(!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['W02']);
+						$CAMPOS	=explode('|',$this->campos_v200['W02']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -2278,7 +2290,7 @@ return(false);
 					// W17
 					$tmp_grupo=$total->getElementsByTagName("ISSQNtot")->item(0);
 					if(!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['W17']);
+						$CAMPOS	=explode('|',$this->campos_v200['W17']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v)->item(0);
@@ -2293,7 +2305,7 @@ return(false);
 					// W23
 					$tmp_grupo=$total->getElementsByTagName("retTrib")->item(0);
 					if(!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['W23']);
+						$CAMPOS	=explode('|',$this->campos_v200['W23']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v)->item(0);
@@ -2310,7 +2322,7 @@ return(false);
 				// X
 				$transp=$infCte->getElementsByTagName("transp")->item(0);
 				if(!empty($transp)){
-					$CAMPOS	=explode('|',$this->campos_v104['X']);
+					$CAMPOS	=explode('|',$this->campos_v200['X']);
 					foreach($CAMPOS as $k=>$v){
 						if($k!=0 && strlen(trim($v))>0){
 							$CAMPOS[$k]=$transp->getElementsByTagName($v);
@@ -2325,7 +2337,7 @@ return(false);
 					// X03, X04, X05
 					$tmp_grupo=$transp->getElementsByTagName("transporta")->item(0);
 					if(!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['X03']);
+						$CAMPOS	=explode('|',$this->campos_v200['X03']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v)->item(0);
@@ -2340,9 +2352,9 @@ return(false);
 						$tmp2=$tmp_grupo->getElementsByTagName('CPF')->item(0);
 						$CAMPOS=false;
 						if(!empty($tmp1)){
-							$CAMPOS	=explode('|',$this->campos_v104['X04']);
+							$CAMPOS	=explode('|',$this->campos_v200['X04']);
 						}elseif(!empty($tmp2)){
-							$CAMPOS	=explode('|',$this->campos_v104['X05']);
+							$CAMPOS	=explode('|',$this->campos_v200['X05']);
 						}
 						if($CAMPOS!==false){
 							foreach($CAMPOS as $k=>$v){
@@ -2360,7 +2372,7 @@ return(false);
 					// X11
 					$tmp_grupo=$transp->getElementsByTagName("retTransp")->item(0);
 					if(!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['X11']);
+						$CAMPOS	=explode('|',$this->campos_v200['X11']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -2375,7 +2387,7 @@ return(false);
 					//X18
 					$tmp_grupo=$transp->getElementsByTagName("veicTransp")->item(0);
 					if(!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['X18']);
+						$CAMPOS	=explode('|',$this->campos_v200['X18']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v);
@@ -2391,7 +2403,7 @@ return(false);
 					$tmp_grupo=$transp->getElementsByTagName("reboque");
 					if(!empty($tmp_grupo)){
 						for($c = 0; $c<$tmp_grupo->length; $c++){
-							$CAMPOS	=explode('|',$this->campos_v104['X22']);
+							$CAMPOS	=explode('|',$this->campos_v200['X22']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->item($c)->getElementsByTagName($v)->item(0);
@@ -2408,7 +2420,7 @@ return(false);
 					$tmp_grupo=$transp->getElementsByTagName("vol");
 					if(!empty($tmp_grupo)){
 						for($c = 0; $c<$tmp_grupo->length; $c++){
-							$CAMPOS	=explode('|',$this->campos_v104['X26']);
+							$CAMPOS	=explode('|',$this->campos_v200['X26']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->item($c)->getElementsByTagName($v)->item(0);
@@ -2423,7 +2435,7 @@ return(false);
 							$tmp_grupo2=$tmp_grupo->item($c)->getElementsByTagName("lacres");
 							if(!empty($tmp_grupo2)){
 								for($c2 = 0; $c2<$tmp_grupo2->length; $c2++){
-									$CAMPOS	=explode('|',$this->campos_v104['X33']);
+									$CAMPOS	=explode('|',$this->campos_v200['X33']);
 									foreach($CAMPOS as $k=>$v){
 										if($k!=0 && strlen(trim($v))>0){
 											$CAMPOS[$k]=$tmp_grupo2->item($c2)->getElementsByTagName($v);
@@ -2446,7 +2458,7 @@ return(false);
 					$CUR_TXT.="Y|\n";
 					$tmp_grupo=$cobr->getElementsByTagName("fat")->item(0);
 					if(!empty($tmp_grupo)){
-						$CAMPOS	=explode('|',$this->campos_v104['Y02']);
+						$CAMPOS	=explode('|',$this->campos_v200['Y02']);
 						foreach($CAMPOS as $k=>$v){
 							if($k!=0 && strlen(trim($v))>0){
 								$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v)->item(0);
@@ -2462,7 +2474,7 @@ return(false);
 					$tmp_grupo=$cobr->getElementsByTagName("dup");
 					if(!empty($tmp_grupo)){
 						for($c = 0; $c<$tmp_grupo->length; $c++){
-							$CAMPOS	=explode('|',$this->campos_v104['Y07']);
+							$CAMPOS	=explode('|',$this->campos_v200['Y07']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->item($c)->getElementsByTagName($v)->item(0);
@@ -2480,7 +2492,7 @@ return(false);
 				// Z
 				$infAdic=$infCte->getElementsByTagName("infAdic")->item(0);
 				if(!empty($infAdic)){
-					$CAMPOS	=explode('|',$this->campos_v104['Z']);
+					$CAMPOS	=explode('|',$this->campos_v200['Z']);
 					foreach($CAMPOS as $k=>$v){
 						if($k!=0 && strlen(trim($v))>0){
 							$CAMPOS[$k]=$infAdic->getElementsByTagName($v)->item(0);
@@ -2495,7 +2507,7 @@ return(false);
 					$tmp_grupo=$infAdic->getElementsByTagName("obsCont");
 					if(!empty($tmp_grupo)){
 						for($c = 0; $c<$tmp_grupo->length; $c++){
-							$CAMPOS	=explode('|',$this->campos_v104['Z04']);
+							$CAMPOS	=explode('|',$this->campos_v200['Z04']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->item($c)->getElementsByTagName($v);
@@ -2511,7 +2523,7 @@ return(false);
 					$tmp_grupo=$infAdic->getElementsByTagName("obsFisco");
 					if(!empty($tmp_grupo)){
 						for($c = 0; $c<$tmp_grupo->length; $c++){
-							$CAMPOS	=explode('|',$this->campos_v104['Z07']);
+							$CAMPOS	=explode('|',$this->campos_v200['Z07']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->item($c)->getElementsByTagName($v);
@@ -2527,7 +2539,7 @@ return(false);
 					$tmp_grupo=$infAdic->getElementsByTagName("procRef");
 					if(!empty($tmp_grupo)){
 						for($c = 0; $c<$tmp_grupo->length; $c++){
-							$CAMPOS	=explode('|',$this->campos_v104['Z10']);
+							$CAMPOS	=explode('|',$this->campos_v200['Z10']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->item($c)->getElementsByTagName($v);
@@ -2545,7 +2557,7 @@ return(false);
 				// ZA
 				$tmp_grupo=$infCte->getElementsByTagName("exporta")->item(0);
 				if(!empty($tmp_grupo)){
-					$CAMPOS	=explode('|',$this->campos_v104['ZA']);
+					$CAMPOS	=explode('|',$this->campos_v200['ZA']);
 					foreach($CAMPOS as $k=>$v){
 						if($k!=0 && strlen(trim($v))>0){
 							$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v)->item(0);
@@ -2561,7 +2573,7 @@ return(false);
 				// ZB
 				$tmp_grupo=$infCte->getElementsByTagName("compra")->item(0);
 				if(!empty($tmp_grupo)){
-					$CAMPOS	=explode('|',$this->campos_v104['ZB']);
+					$CAMPOS	=explode('|',$this->campos_v200['ZB']);
 					foreach($CAMPOS as $k=>$v){
 						if($k!=0 && strlen(trim($v))>0){
 							$CAMPOS[$k]=$tmp_grupo->getElementsByTagName($v)->item(0);
@@ -2577,7 +2589,7 @@ return(false);
 				// ZC01
 				$cana=$infCte->getElementsByTagName("cana")->item(0);
 				if(!empty($cana)){
-					$CAMPOS	=explode('|',$this->campos_v104['ZC01']);
+					$CAMPOS	=explode('|',$this->campos_v200['ZC01']);
 					foreach($CAMPOS as $k=>$v){
 						if($k!=0 && strlen(trim($v))>0){
 							$CAMPOS[$k]=$cana->getElementsByTagName($v);
@@ -2592,7 +2604,7 @@ return(false);
 					$tmp_grupo=$cana->getElementsByTagName("forDia");
 					if(!empty($tmp_grupo)){
 						for($c = 0; $c<$tmp_grupo->length; $c++){
-							$CAMPOS	=explode('|',$this->campos_v104['ZC04']);
+							$CAMPOS	=explode('|',$this->campos_v200['ZC04']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->item($c)->getElementsByTagName($v);
@@ -2609,7 +2621,7 @@ return(false);
 					$tmp_grupo=$cana->getElementsByTagName("deduc");
 					if(!empty($tmp_grupo)){
 						for($c = 0; $c<$tmp_grupo->length; $c++){
-							$CAMPOS	=explode('|',$this->campos_v104['ZC10']);
+							$CAMPOS	=explode('|',$this->campos_v200['ZC10']);
 							foreach($CAMPOS as $k=>$v){
 								if($k!=0 && strlen(trim($v))>0){
 									$CAMPOS[$k]=$tmp_grupo->item($c)->getElementsByTagName($v);
@@ -2633,14 +2645,13 @@ return(false);
 /*
 /// teste:
 $nfe=new ConvertCteNFePHP();
-$TXT_ORI=implode("\n", $nfe->campos_v104 );
-#$TXT_ORI=implode("|\n", array_keys($nfe->campos_v104) );$TXT_ORI=str_replace("A|\nB|","A|1.04|ID|\nB|",$TXT_ORI);
-$TXT_ORI=str_replace('versao','1.04',$TXT_ORI);
-#$TXT_ORI="A|1.04|ID|\nB|\nC|\n";
+$TXT_ORI=implode("\n", $nfe->campos_v200 );
+#$TXT_ORI=implode("|\n", array_keys($nfe->campos_v200) );$TXT_ORI=str_replace("A|\nB|","A|2.00|ID|\nB|",$TXT_ORI);
+$TXT_ORI=str_replace('versao','2.00',$TXT_ORI);
+#$TXT_ORI="A|2.00|ID|\nB|\nC|\n";
 
 $XML=$nfe->TXT2XML( $TXT_ORI,true );//$TXT_ORI,true );
 var_dump($XML['xml'][0]['xml']);
 $TXT=$nfe->XML2TXT( $XML['xml'][0]['xml'] );
 var_dump($TXT);
 */
-?>
